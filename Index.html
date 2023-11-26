@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comics Creater</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+    <style>
+        body {
+            background-color: #191024;
+        }
+
+        .card-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            background-color: white;
+            margin: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.1);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            /* max-height: 200px; */
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .modal-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 3;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            width: 300px;
+            height: 400px;
+            background-image: url(bg1.jpg);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            position: relative;
+            animation: modalZoomIn 0.5s ease-in-out forwards;
+        }
+
+
+        .card-content {
+            padding: 16px;
+            text-align: center;
+        }
+
+        @keyframes modalZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .close {
+            cursor: pointer;
+            color: #ffffff;
+            position: absolute;
+            font-size: 28px;
+            top: 10px;
+            right: 15px;
+        }
+
+        /* Remove the animation for the submit button */
+        .modal-content button {
+            animation: none;
+        }
+
+        /* Add a new animation for the pop-down effect */
+        @keyframes modalZoomOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            z-index: -1;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 3;
+        }
+
+    </style>
+
+    <style>
+        .gr{
+            position: absolute;
+            height: 30rem; 
+            width: 100%;
+            top: 60% ;
+            background: linear-gradient(rgba(0 , 0 , 0 ,0) , #191024);
+            z-index: 0;
+        }
+
+        .row{
+            justify-content: space-evenly;
+        }
+
+        /* h1 {
+            font-size: 100px;
+            text-decoration: solid;
+            font-weight: 900;
+            background: -webkit-linear-gradient(45deg , rgb(6, 235, 235), #e50707);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        } */
+        .z1{
+            z-index: 1;
+        }
+
+        .line_highlight{
+            background-image: linear-gradient(0deg,#d72b59,#fbe851);
+            background-image: -webkit-linear-gradient(0deg,#d72b59,#fbe851);
+            background-clip: text;
+            text-transform: uppercase;
+            -webkit-background-clip: text;
+            background-color: transparent;
+            color: #fbe851;
+            text-fill-color: transparent;
+            -webkit-text-fill-color: transparent;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .fc{
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .im2{
+            width: 50%;
+            height: auto;
+        }
+        
+        strong{
+            color: aqua;
+        }
+        .txtr{
+            font-size: 6rem;
+        }
+
+        @media screen and (max-width: 1440px) {
+        .txtr {
+            font-size: calc(20px + 80 * ( (100vw - 300px) / 1140));
+        }
+        }
+        @media screen and (max-width: 768px) {
+            #hd{
+                display: none;
+            }
+            /* .modal{
+                width: 600px;
+            } */
+        }
+
+        /* .modal div input{
+            height: 10rem;
+            background-color: rgba(0, 0, 0, 0);
+        } */
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="video-container">
+        <video id="fullscreen-video" autoplay loop muted>
+            <source src="bgf.mp4" type="video/mp4">
+            
+        </video>
+        <div class="content">
+            <!-- Your other content goes here -->
+            <img style="width: 80%;"  src="https://static.crunchyroll.com/fms/logo/3de5c3ff-547a-40ec-a9b0-40f4113569ce.png" alt="jayad code mat dekh bhai" loading="eager">
+            <!-- <h1>Your Website Title</h1>
+            <p>Welcome to your website!</p> -->
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        <div class="gr" >
+        </div>
+        
+    </div>
+
+    <div class="container z1 line_highlight fc">
+        <h1 class="txtr">Create your own comic</h1>
+    </div>
+
+    <div class="container-fluid z1">
+        <div class="row">
+            <div class="col-md-6 im2">
+                <img src="https://www.theglimmering.com/_next/image?url=%2Fassets%2Fimages%2FWebCollage_angryedit.png&w=3840&q=75" class="img-fluid" alt="">
+            </div>
+            <div class="col-md-6 fc" style="color: white; flex-direction: column;">
+                <h3 class="line_highlight" style="text-align: center; font-size: 20px; font-weight: bold;"> How It Works:</h3>
+                <div>
+                    <strong>Input Your Story: </strong>Start by entering your narrative, dialogue, or any text that sparks your imagination. Describe the scenes, characters, and emotions — the more vivid, the better!
+                <br>
+                <br>
+                
+                <strong>Text-to-Image Magic:</strong>
+                 Behind the scenes, Comicify utilizes a powerful Text-to-Image API. This cutting-edge technology interprets your text and transforms it into visually engaging comic panels. Watch as your words seamlessly transition into vibrant illustrations!
+                <br>
+                <br>
+
+                <strong>Customization Options: </strong>
+                Personalize your comics with various styling options. Choose from a palette of colors, adjust panel layouts, and even pick character expressions. Tailor the visual elements to match the unique tone of your story. 
+                <br>
+                <br>
+
+                <strong>Instant Preview:</strong>
+                Get an instant preview of your comic masterpiece. Marvel at the dynamic scenes and expressive characters brought to life by the magic of text-to-image conversion. 
+                <br>
+                <br>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="container z1 line_highlight fc" style="margin-bottom: 20px;" >
+        <h1 class="txtr">write your imagination and see magic</h1>
+    </div>
+    <div>
+        <h3 class="fc" style="text-align: center; margin-bottom: 20px ; font-size: 20px; font-weight: bold; color: rgb(250, 253, 253); text-transform: uppercase;">Fill these 10 tiles with your imagination</h3>
+    </div>
+
+<!-- cards -->
+
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md card-container" onclick="openModal(1)">
+                    <div class="card" >
+                        <img id = "card_img1" src="click.png" alt="Card Image" onclick="openModal(1)">
+                        <div class="card-content">
+                            <h2>Story line 1</h2>
+                            <p id = "cardText1">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(2)">
+                    <div class="card" >
+                        <img id = "card_img2" src="click.png" alt="Card Image" onclick="openModal(2)">
+                        <div class="card-content">
+                            <h2>Story line 2</h2>
+                            <p id = "cardText2">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(3)">
+                    <div class="card" >
+                        <img id = "card_img3" src="click.png" alt="Card Image" onclick="openModal(3)">
+                        <div class="card-content">
+                            <h2>Story line 3</h2>
+                            <p id = "cardText3">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(4)">
+                    <div class="card" >
+                        <img id = "card_img4" src="click.png" alt="Card Image" onclick="openModal(4)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText4">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md card-container" onclick="openModal(5)">
+                    <div class="card" >
+                        <img id = "card_img5" src="click.png" alt="Card Image" onclick="openModal(5)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText5">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(6)">
+                    <div class="card" >
+                        <img id = "card_img6" src="click.png" alt="Card Image" onclick="openModal(6)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText6">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(7)">
+                    <div class="card" >
+                        <img id = "card_img7" src="click.png" alt="Card Image" onclick="openModal(7)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText7">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(8)">
+                    <div class="card" >
+                        <img id = "card_img8" src="click.png" alt="Card Image" onclick="openModal(8)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText8">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3" id="hd"></div>
+                <div class="col-md card-container" onclick="openModal(9)">
+                    <div class="card" >
+                        <img id = "card_img9" src="click.png" alt="Card Image" onclick="openModal(9)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText9">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md card-container" onclick="openModal(10)">
+                    <div class="card" >
+                        <img id = "card_img10" src="click.png" alt="Card Image" onclick="openModal(10)">
+                        <div class="card-content">
+                            <h2>Story line </h2>
+                            <p id = "cardText10">Write your imagination</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" id="hd"></div>
+            </div>
+        </div>
+    </div>
+    
+
+<!-- Modal -->
+<div class="modal-container" id="modalContainer1" onclick="closeModal(1)">
+    <div class="modal" id="modal1" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(1)">&times;</span>
+        <div class="modal-content mb-3">
+                <textarea id="input1" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(1)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer2" onclick="closeModal(2)">
+    <div class="modal" id="modal2" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(2)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input2" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(2)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer3" onclick="closeModal(3)">
+    <div class="modal" id="modal3" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(3)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input3" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(3)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer4" onclick="closeModal(4)">
+    <div class="modal" id="modal4" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(4)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input4" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(4)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer5" onclick="closeModal(5)">
+    <div class="modal" id="modal5" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(5)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input5" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(5)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer6" onclick="closeModal(6)">
+    <div class="modal" id="modal6" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(6)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input6" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(6)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer7" onclick="closeModal(7)">
+    <div class="modal" id="modal7" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(7)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input7" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(7)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer8" onclick="closeModal(8)">
+    <div class="modal" id="modal8" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(8)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input8" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(8)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer9" onclick="closeModal(9)">
+    <div class="modal" id="modal9" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(9)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input9" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(9)">Submit</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-container" id="modalContainer10" onclick="closeModal(10)">
+    <div class="modal" id="modal10" onclick="stopPropagation(event)">
+        <span class="close" onclick="closeModal(10)">&times;</span>
+        <div class="modal-content mb-3">
+            <textarea id="input10" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            <button onclick="submitForm(10)">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+
+<script>
+    async function query(data) {
+        const response = await fetch(
+            "https://xdwvg9no7pefghrn.us-east-1.aws.endpoints.huggingface.cloud",
+            {
+                headers: { 
+                    "Accept": "image/png",
+                    "Authorization": "Bearer VknySbLLTUjbxXAXCjyfaFIPwUTCeRXbFSOjwRiCxsxFyhbnGjSFalPKrpvvDAaPVzWEevPljilLVDBiTzfIbWFdxOkYJxnOPoHhkkVGzAknaOulWggusSFewzpqsNWM", 
+                    "Content-Type": "application/json" 
+                },
+                method: "POST",
+                body: JSON.stringify(data),
+            }
+        );
+        const result = await response.blob();
+        return result;
+    }
+
+    var imm;
+    
+</script>
+
+
+<script>
+    function openModal(cardNumber) {
+        console.log('opened model no ' + cardNumber);
+        const modalContainer = document.getElementById('modalContainer'+ cardNumber);
+        const modal = document.getElementById('modal' + cardNumber);
+        modalContainer.style.display = 'flex';
+        modal.style.display = 'flex';
+    }
+
+    function closeModal(cardNumber) {
+        console.log('closing model no ' + cardNumber);
+        const modalContainer = document.getElementById('modalContainer'+cardNumber);
+        const modal = document.getElementById('modal' + cardNumber);
+        modal.style.animation = 'modalZoomOut 0.5s ease-in-out forwards';
+        setTimeout(() => {
+            modalContainer.style.display = 'none';
+            modal.style.display = 'none';
+            modal.style.animation = '';
+        }, 500);
+    }
+
+    async function submitForm(cardNumber) {
+        console.log('submiting ' + cardNumber);
+        const modal = document.getElementById('modal' + cardNumber);
+        const input = document.getElementById('input' + cardNumber);
+        const curr_obj = document.getElementById('card_img' + cardNumber);
+        const inputValue = input.value.toString();
+        if(!inputValue){
+            alert("please enter valid statment");
+            return;
+        } 
+
+        // Update the card text with the entered value
+        const cardText = document.getElementById('cardText' + cardNumber);
+        console.log(cardNumber);
+        console.log(cardText);
+        cardText.innerText = inputValue;
+
+        // Reset the animation for the submit button
+        const submitButton = modal.querySelector('button');
+        submitButton.style.animation = '';
+
+        // After a short delay, handle the submission and close the modal
+        setTimeout(() => {
+            closeModal(cardNumber);
+        });
+
+        console.log(inputValue);
+        curr_obj.src = "Pulse2.gif";
+
+        const prom = {"inputs" : inputValue};
+        await query(prom).then((response) => {
+            imm = response;
+            console.log(imm);
+            console.log("helloo Aman await khatm");
+            var blobUrl = URL.createObjectURL(imm);
+            console.log(curr_obj)
+            curr_obj.src = blobUrl;
+        });
+    }
+
+    // Stop click event propagation for the modal
+    function stopPropagation(event) {
+        event.stopPropagation();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+    var video = document.getElementById('responsive-video');
+
+    // Play video when the page loads
+    // video.play();
+
+    // Example: Pause the video when it's out of the viewport
+    // window.addEventListener('scroll', function () {
+    //     var videoPosition = video.getBoundingClientRect();
+    //     if (videoPosition.bottom < 0 || videoPosition.top > window.innerHeight) {
+    //         video.pause();
+    //     } else {
+    //         video.play();
+    //     }
+    // });
+});
+
+
+
+</script>
+
+
+</html>
